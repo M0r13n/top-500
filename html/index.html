@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF8"/>
+    <title>
+        Top PyPi packages and their dependencies visualized
+    </title>
+
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        #mynetwork {
+            width: 800px;
+            height: 800px;
+            display: table;
+            margin: 0 auto;
+            border: 1px solid black;
+        }
+
+        #outer {
+            width: 100%;
+        }
+
+        .input-color {
+            position: relative;
+        }
+
+        .input-color input {
+            padding-left: 20px;
+        }
+
+        .input-color .color-box {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            background-color: #ccc;
+            left: 5px;
+            top: 5px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<noscript>You need to enable JavaScript to run this app.</noscript>
+
+<header>
+    <h1>Top PyPi packages and their dependencies visualized</h1>
+</header>
+
+<div id="outer">
+    <div id="mynetwork"></div>
+</div>
+
+<h2>Notes:</h2>
+<ul>
+    <li>this graph includes the top 500 packages from PyPi and their direct dependencies</li>
+    <li>transitive dependencies are not considered</li>
+    <li>
+        <div class="input-color">
+            <div class="color-box" style="background-color: #B8336A;"></div>
+            > 100.000.000 downloads
+        </div>
+    </li>
+    <li>
+        <div class="input-color">
+            <div class="color-box" style="background-color: #C490D1;"></div>
+            > 10.000.000 downloads
+        </div>
+    </li>
+    <li>
+        <div class="input-color">
+            <div class="color-box" style="background-color: #ACACDE;"></div>
+            > 1.000.000 downloads
+        </div>
+    </li>
+    <li>
+        <div class="input-color">
+            <div class="color-box" style="background-color: #ABDAFC;"></div>
+            > 100.000 downloads
+        </div>
+    </li>
+    <li>
+        <div class="input-color">
+            <div class="color-box" style="background-color: #E5FCFF;"></div>
+            < 100.000 downloads
+        </div>
+    </li>
+
+
+</ul>
+<p>
+    <a href="#">Source on Github</a>
+</p>
+
+<script type="text/javascript">
+    let network;
+    let nodes = [];
+    let edges = [];
+
+    async function fetchData() {
+        await fetch('/static/nodes.json')
+            .then(response => response.json())
+            .then(data => nodes = data);
+
+        await fetch('/static/edges.json')
+            .then(response => response.json())
+            .then(data => edges = data);
+
+        return null;
+    }
+
+    function setColors() {
+        for (const node of nodes) {
+            if (node.download_count > 100000000) {
+                node.group = "very_popular";
+            } else if (node.download_count > 10000000) {
+                node.group = "popular";
+            } else if (node.download_count > 1000000) {
+                node.group = "medium_popular";
+            } else if (node.download_count > 100000) {
+                node.group = "less_popular";
+            } else {
+                node.group = "unpopular";
+            }
+        }
+    }
+
+
+    function redrawAll() {
+        const container = document.getElementById("mynetwork");
+        const options = {
+            groups: {
+                very_popular: {color: {background: '#B8336A'}},
+                popular: {color: {background: '#C490D1'}},
+                medium_popular: {color: {background: '#ACACDE'}},
+                less_popular: {color: {background: '#ABDAFC'}},
+                unpopular: {color: {background: '#E5FCFF'}},
+            },
+            nodes: {
+                shape: "dot",
+                scaling: {
+                    min: 10,
+                    max: 30,
+                },
+                font: {
+                    size: 12,
+                    face: "Tahoma",
+                },
+            },
+            edges: {
+                width: 0.15,
+                color: {inherit: "from"},
+                smooth: {
+                    type: "continuous",
+                },
+            },
+
+            physics: {
+                stabilization: false,
+                barnesHut: {
+                    gravitationalConstant: -7000,
+                    springConstant: 0.001,
+                    springLength: 200,
+                },
+            },
+            interaction: {
+                tooltipDelay: 200,
+                hideEdgesOnDrag: true,
+            },
+
+        };
+
+        const data = {nodes: nodes, edges: edges};
+        network = new vis.Network(container, data, options);
+    }
+
+    fetchData().then(() => setColors()).then(() => redrawAll());
+</script>
+</body>
+</html>
