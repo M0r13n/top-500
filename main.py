@@ -87,7 +87,7 @@ if __name__ == "__main__":
 
     print(f"Found {len(nodes)} packages")
 
-    with open("static/nodes.json", "w") as fd:
+    with open("build/nodes.json", "w") as fd:
         json.dump(
             [
                 {
@@ -99,5 +99,5 @@ if __name__ == "__main__":
             ], fd
         )
 
-    with open("static/edges.json", "w") as fd:
+    with open("build/edges.json", "w") as fd:
         json.dump([{"from": _from, "to": _to} for (_from, _to) in edges], fd)

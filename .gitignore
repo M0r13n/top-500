@@ -1,5 +1,5 @@
 .idea
 venv
+build
 res/*.json
-static/*.json
 *.pyc

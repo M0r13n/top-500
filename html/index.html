@@ -90,7 +90,7 @@
 
 </ul>
 <p>
-    <a href="#">Source on Github</a>
+    <a href="https://github.com/M0r13n/top-500" target="_blank">Source on Github</a>
 </p>
 
 <script type="text/javascript">
@@ -99,11 +99,11 @@
     let edges = [];
 
     async function fetchData() {
-        await fetch('/static/nodes.json')
+        await fetch('/nodes.json')
             .then(response => response.json())
             .then(data => nodes = data);
 
-        await fetch('/static/edges.json')
+        await fetch('/edges.json')
             .then(response => response.json())
             .then(data => edges = data);
 
