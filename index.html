@@ -99,11 +99,11 @@
     let edges = [];
 
     async function fetchData() {
-        await fetch('/nodes.json')
+        await fetch('nodes.json')
             .then(response => response.json())
             .then(data => nodes = data);
 
-        await fetch('/edges.json')
+        await fetch('edges.json')
             .then(response => response.json())
             .then(data => edges = data);
 
